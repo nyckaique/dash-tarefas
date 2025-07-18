@@ -2,7 +2,7 @@
 import { Task } from "@/types/task";
 import { useEffect, useState } from "react";
 import { getTask } from "@/lib/graphql";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,15 +14,11 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import {
-  CalendarCheck,
-  Trash2,
-  CircleCheckBig,
-  RefreshCcw,
-  House,
-} from "lucide-react";
+import { CalendarCheck, CircleCheckBig, House } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ButtonUpdateTaskStatus } from "@/components/ButtonUpdateTaskStatus";
+import { ButtonDeleteTask } from "@/components/ButtonDeleteTask";
 
 export default function TaskPage() {
   const [task, setTask] = useState<Task>();
@@ -39,6 +35,14 @@ export default function TaskPage() {
     );
     setUserName(`${task?.user.firstName} ${task?.user.lastName}`);
   }, [task]);
+
+  const handleStatusUpdate = (newStatus: Task["status"]) => {
+    setTask((prev) => (prev ? { ...prev, status: newStatus } : prev));
+  };
+  const router = useRouter();
+  const handleDelete = () => {
+    router.push("/");
+  };
 
   return (
     <main className="max-w-6xl mx-auto p-6 space-y-6">
@@ -106,7 +110,7 @@ export default function TaskPage() {
                 </p>
                 <p className="w-full flex items-center gap-2 text-sm">
                   Categoria:{" "}
-                  <Badge variant={"outline"} className="text-sm ">
+                  <Badge variant={"outline"} className="text-sm bg-white">
                     {task.category}
                   </Badge>
                 </p>
@@ -114,32 +118,18 @@ export default function TaskPage() {
                   Data de criação:{" "}
                   <Badge
                     variant={"outline"}
-                    className="text-sm flex items-center gap-1"
+                    className="text-sm flex items-center gap-1 bg-white"
                   >
                     <CalendarCheck />
                     {new Date(task.createdAt).toLocaleDateString()}
                   </Badge>
                 </p>
               </CardTitle>
-              {task.status === "pending" ? (
-                <Button variant="outline" size="sm" className="cursor-pointer">
-                  <CircleCheckBig />
-                  Concluir
-                </Button>
-              ) : (
-                <Button variant="outline" size="sm" className="cursor-pointer">
-                  <RefreshCcw />
-                  Reabrir
-                </Button>
-              )}
-              <Button
-                variant="destructive"
-                size="sm"
-                className="cursor-pointer"
-              >
-                <Trash2 />
-                Excluir
-              </Button>
+              <ButtonUpdateTaskStatus
+                task={task}
+                onStatusUpdate={handleStatusUpdate}
+              />
+              <ButtonDeleteTask id={task.id} onDelete={handleDelete} />
             </CardHeader>
           </div>
         </Card>

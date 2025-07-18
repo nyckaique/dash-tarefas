@@ -1,6 +1,5 @@
 import { Task } from "@/types/task";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,19 +10,22 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import {
-  CalendarCheck,
-  Trash2,
-  CircleCheckBig,
-  RefreshCcw,
-} from "lucide-react";
+import { CalendarCheck } from "lucide-react";
+import { ButtonUpdateTaskStatus } from "@/components/ButtonUpdateTaskStatus";
+import { ButtonDeleteTask } from "@/components/ButtonDeleteTask";
+import { useState } from "react";
 type Props = {
-  task: Task;
+  initialTask: Task;
+  onDelete: () => void;
 };
 
-export function TaskCard({ task }: Props) {
+export function TaskCard({ initialTask, onDelete }: Props) {
+  const [task, setTask] = useState(initialTask);
   const avatarFallbackText = `${task.user.firstName[0]}${task.user.lastName[0]}`;
   const userName = `${task.user.firstName} ${task.user.lastName}`;
+  const handleStatusUpdate = (newStatus: Task["status"]) => {
+    setTask((prev) => (prev ? { ...prev, status: newStatus } : prev));
+  };
   return (
     <Card className="w-full hover:drop-shadow-lg transition-shadow duration-700">
       <CardHeader className="">
@@ -71,22 +73,12 @@ export function TaskCard({ task }: Props) {
             {new Date(task.createdAt).toLocaleDateString()}
           </Badge>
         </div>
-        <div className="flex flex-wrap gap-2 justify-start md:justify-end">
-          {task.status === "pending" ? (
-            <Button variant="outline" size="sm" className="cursor-pointer">
-              <CircleCheckBig />
-              Concluir
-            </Button>
-          ) : (
-            <Button variant="outline" size="sm" className="cursor-pointer">
-              <RefreshCcw />
-              Reabrir
-            </Button>
-          )}
-          <Button variant="destructive" size="sm" className="cursor-pointer">
-            <Trash2 />
-            Excluir
-          </Button>
+        <div className="flex flex-col md:flex-row gap-2 justify-start md:justify-end w-full md:w-auto">
+          <ButtonUpdateTaskStatus
+            task={task}
+            onStatusUpdate={handleStatusUpdate}
+          />
+          <ButtonDeleteTask id={task.id} onDelete={onDelete} />
         </div>
       </CardFooter>
     </Card>

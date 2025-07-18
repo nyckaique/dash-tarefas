@@ -4,11 +4,9 @@ import { useState, useEffect } from "react";
 import { Task } from "@/types/task";
 import { getTasks } from "@/lib/graphql";
 import { CategoryFilter } from "./CategoryFilter";
-import { Button } from "@/components/ui/button";
 import { TaskCard } from "@/components/TaskCard";
-import Link from "next/link";
-import { CirclePlus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CreateTaskDialog } from "@/components/CreateTaskDialog";
 
 export function TasksList() {
   const [category, setCategory] = useState("Todos");
@@ -25,12 +23,9 @@ export function TasksList() {
       <div className="flex flex-wrap flex-col md:flex-row gap-2 justify-start md:justify-between items-start md:items-center">
         <CategoryFilter selected={category} onChange={setCategory} />
 
-        <Button asChild variant={"outline"} className="w-full md:w-auto">
-          <Link href="#">
-            {" "}
-            <CirclePlus /> Criar Nova Task
-          </Link>
-        </Button>
+        <CreateTaskDialog
+          onCreate={(newTask) => setTasks((prev) => [newTask, ...prev])}
+        />
       </div>
 
       <div className="space-y-4">
@@ -47,7 +42,13 @@ export function TasksList() {
           </div>
         )}
         {tasks.map((task: Task) => (
-          <TaskCard key={task.id} task={task} />
+          <TaskCard
+            key={task.id}
+            initialTask={task}
+            onDelete={() =>
+              setTasks((prev) => prev.filter((t) => t.id !== task.id))
+            }
+          />
         ))}
       </div>
     </main>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Urbanist } from "next/font/google";
 import "./globals.css";
-
+import { Toaster } from "@/components/ui/sonner";
 const urbanist = Urbanist({
   weight: "400",
   subsets: ["latin"],
@@ -18,9 +18,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-br">
+    <html lang="pt-BR" suppressHydrationWarning>
       <body className={`${urbanist.className} antialiased bg-neutral-50`}>
         {children}
+        <Toaster position="top-center" />
       </body>
     </html>
   );
