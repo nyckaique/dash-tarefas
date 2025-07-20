@@ -1,6 +1,7 @@
 import { Task } from "@/types/task";
 
-const endpoint = "http://localhost:3000/api/graphql";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+export const endpoint = `${baseUrl}/api/graphql`;
 
 // Buscar tarefas com base na categoria e limite
 export async function getTasks(

@@ -1,7 +1,7 @@
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import gql from "graphql-tag";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { mockDB } from "@/lib/mockDB";
 import { Task } from "@/types/task";
 
@@ -100,8 +100,33 @@ const server = new ApolloServer({
   resolvers,
 });
 
-const handler = startServerAndCreateNextHandler<NextRequest>(server, {
-  context: async (req) => ({ req }),
+const createHandler = startServerAndCreateNextHandler(server, {
+  context: async (req: NextRequest) => ({ req }),
 });
 
-export { handler as GET, handler as POST };
+function addCorsHeaders(res: Response): Response {
+  const newHeaders = new Headers(res.headers);
+  newHeaders.set("Access-Control-Allow-Origin", "*");
+  newHeaders.set("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  newHeaders.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  return new Response(res.body, {
+    status: res.status,
+    statusText: res.statusText,
+    headers: newHeaders,
+  });
+}
+
+export async function GET(req: NextRequest) {
+  const res = await createHandler(req);
+  return addCorsHeaders(res);
+}
+
+export async function POST(req: NextRequest) {
+  const res = await createHandler(req);
+  return addCorsHeaders(res);
+}
+
+export async function OPTIONS() {
+  const res = NextResponse.json(null, { status: 204 });
+  return addCorsHeaders(res);
+}
