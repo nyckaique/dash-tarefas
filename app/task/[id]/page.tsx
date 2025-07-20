@@ -31,7 +31,7 @@ export default function TaskPage() {
   }, [id]);
   useEffect(() => {
     setAvatarFallbackText(
-      `${task?.user.firstName[0]}${task?.user.lastName[0]}`
+      `${task?.user.firstName[0].toUpperCase()}${task?.user.lastName[0].toUpperCase()}`
     );
     setUserName(`${task?.user.firstName} ${task?.user.lastName}`);
   }, [task]);

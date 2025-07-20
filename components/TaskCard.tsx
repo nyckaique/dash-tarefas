@@ -21,7 +21,7 @@ type Props = {
 
 export function TaskCard({ initialTask, onDelete }: Props) {
   const [task, setTask] = useState(initialTask);
-  const avatarFallbackText = `${task.user.firstName[0]}${task.user.lastName[0]}`;
+  const avatarFallbackText = `${task.user.firstName[0].toUpperCase()}${task.user.lastName[0].toUpperCase()}`;
   const userName = `${task.user.firstName} ${task.user.lastName}`;
   const handleStatusUpdate = (newStatus: Task["status"]) => {
     setTask((prev) => (prev ? { ...prev, status: newStatus } : prev));

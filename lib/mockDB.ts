@@ -1,28 +1,5 @@
 import { Task } from "@/types/task";
 
-function generateDateWithRandomTime(dateStr: string): string {
-  const [year, month, day] = dateStr.split("-").map(Number);
-
-  const randomHour = Math.floor(Math.random() * 24);
-  const randomMinute = Math.floor(Math.random() * 60);
-  const randomSecond = Math.floor(Math.random() * 60);
-  const randomMs = Math.floor(Math.random() * 1000);
-
-  const dateUTC = new Date(
-    Date.UTC(
-      year,
-      month - 1,
-      day,
-      randomHour,
-      randomMinute,
-      randomSecond,
-      randomMs
-    )
-  );
-
-  return dateUTC.toISOString();
-}
-
 // Mock de tarefas
 export const mockDB = {
   tarefas: [
