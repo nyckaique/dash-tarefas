@@ -2,7 +2,7 @@
 
 ## Link da aplicação publicada
 
-[Link](https://dash-tarefas-git-main-nyckaiques-projects.vercel.app)
+[Link](https://dash-tarefas.vercel.app/)
 
 ## Projeto
 
